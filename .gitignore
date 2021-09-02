@@ -1,0 +1,10 @@
+*
+!first_run_haproxy.sh
+!first_run_redmine0.sh
+!first_run_redmine1.sh
+!first_run_postgres.sh
+!main.tf
+!README.md
+!variables.tf
+!outputs.tf
+!.gitignore

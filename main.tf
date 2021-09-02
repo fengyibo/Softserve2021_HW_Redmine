@@ -48,19 +48,6 @@ resource "google_compute_firewall" "vpc_http" {
 }
 
 
-resource "google_compute_firewall" "vpc_https" {
-  name    = "https-allow"
-  network = google_compute_network.redmine_network.name
-
-  
-  allow {
-    protocol = "tcp"
-    ports    = ["443"]
-  }
-
-  target_tags   = ["https-allow"]
-      
-}
 
 resource "google_compute_firewall" "vpc_ssh" {
   name    = "ssh-allow"
@@ -80,7 +67,7 @@ resource "google_compute_firewall" "vpc_ssh" {
 resource "google_compute_instance" "haproxy" {
   name         = "haproxy"
   machine_type = var.instance
-  tags         = ["ssh-allow","http-allow","https-allow","icmp-allow"]
+  tags         = ["ssh-allow","http-allow","icmp-allow"]
 
   boot_disk {
     initialize_params {
