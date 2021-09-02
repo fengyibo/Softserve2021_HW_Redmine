@@ -1,6 +1,6 @@
 # HA Proxy configuration file template
 # Please replace <IP> and <port> in "redmine_backend" section
-# with appripriate values
+# with appropriate values
 # 
 # Stats are available on proxy host, port 8888, path /ha-stats
 
@@ -40,7 +40,7 @@ listen stats
 frontend redmine_frontend
    bind *:80
    stats uri /haproxy?stats
-   default_backend redmine_back
+   default_backend redmine_backend
 
 backend redmine_backend
     balance roundrobin
