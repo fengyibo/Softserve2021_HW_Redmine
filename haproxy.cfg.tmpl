@@ -1,9 +1,3 @@
-# HA Proxy configuration file template
-# Please replace <IP> and <port> in "redmine_backend" section
-# with appropriate values
-# 
-# Stats are available on proxy host, port 8888, path /ha-stats
-
 global
 	log /dev/log	local0
 	log /dev/log	local1 notice
@@ -19,7 +13,7 @@ defaults
 	mode	http
 	option	httplog
 	option	dontlognull
-	maxconn 1000
+	maxconn 1024
         timeout connect 5s
         timeout client  10s
         timeout server  10s
@@ -36,15 +30,15 @@ listen stats
 	stats enable
 	stats uri /ha-stats
 	stats refresh 5s
+	stats auth admin:HAProxystat1
 
 frontend redmine_frontend
    bind *:80
-   stats uri /haproxy?stats
    default_backend redmine_backend
 
 backend redmine_backend
     balance roundrobin
     option httpchk HEAD /
-    server redmine0:3000 check
-    server redmine1:3000 check
+    server appsrv1	redmine0:3000 check
+    server appsrv2	redmine1:3000 check
 
