@@ -107,7 +107,7 @@ resource "google_compute_instance" "haproxy" {
 resource "google_compute_instance" "redmine0" {
   name         = "redmine0"
   machine_type = var.instance
-  depends_on   = [google_compute_instance.postgres]
+  depends_on   = [google_sql_user.postgres_user]
   tags         = ["ssh-allow","icmp-allow"]
 
   boot_disk {
@@ -136,7 +136,7 @@ resource "google_compute_instance" "redmine0" {
 resource "google_compute_instance" "redmine1" {
   name         = "redmine1"
   machine_type = var.instance
-  depends_on   = [google_compute_instance.postgres]
+  depends_on   = [google_sql_user.postgres_user]
   tags         = ["ssh-allow","icmp-allow"]
 
   boot_disk {
@@ -165,6 +165,7 @@ resource "google_compute_instance" "redmine1" {
 
 resource "google_compute_instance" "postgres" {
   name         = "postgres"
+  count        = 0
   machine_type = var.instance
   depends_on   = [google_compute_subnetwork.redmine_subnetwork]
   tags         = ["ssh-allow","icmp-allow"]
@@ -220,7 +221,6 @@ resource "google_sql_database_instance" "postgres" {
     }
    
     backup_configuration {
-      binary_log_enabled = true
       enabled = true
       start_time = "00:00"
     }

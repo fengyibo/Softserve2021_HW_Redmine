@@ -45,6 +45,6 @@ frontend redmine_frontend
 backend redmine_backend
     balance roundrobin
     option httpchk HEAD /
-    server appsrv1	<IP>:<port> check
-    server appsrv2	<IP>:<port> check
+    server redmine0:3000 check
+    server redmine1:3000 check
 
