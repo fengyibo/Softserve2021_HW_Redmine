@@ -18,6 +18,16 @@ provider "google" {
 
 resource "google_compute_network" "redmine_network" {
   name = "redmine-network"
+  auto_create_subnetworks = false
+}
+
+
+resource "google_compute_subnetwork" "redmine_subnetwork" {
+  name                     = "redmine-subnetwork"
+  ip_cidr_range            = var.network_cidr
+  network                  = google_compute_network.redmine_network.self_link
+  region                   = var.region
+  private_ip_google_access = true
 }
 
 
@@ -77,7 +87,8 @@ resource "google_compute_instance" "haproxy" {
   }
 
   network_interface {
-    network = google_compute_network.redmine_network.name
+    subnetwork = google_compute_subnetwork.redmine_subnetwork.name
+    network_ip = var.haproxy_ip
     access_config {
     }
   }
@@ -105,7 +116,8 @@ resource "google_compute_instance" "redmine0" {
   }
 
   network_interface {
-    network = google_compute_network.redmine_network.name
+    subnetwork = google_compute_subnetwork.redmine_subnetwork.name
+    network_ip = var.redmine0_ip
     access_config {
     }
   }
@@ -132,7 +144,8 @@ resource "google_compute_instance" "redmine1" {
   }
 
   network_interface {
-    network = google_compute_network.redmine_network.name
+    subnetwork = google_compute_subnetwork.redmine_subnetwork.name
+    network_ip = var.redmine1_ip
     access_config {
     }
   }
@@ -160,7 +173,8 @@ resource "google_compute_instance" "postgres" {
   }
 
   network_interface {
-    network = google_compute_network.redmine_network.name
+    subnetwork = google_compute_subnetwork.redmine_subnetwork.name
+    network_ip = var.postgres_ip
     access_config {
     }
   }

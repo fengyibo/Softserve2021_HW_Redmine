@@ -23,3 +23,28 @@ variable "publickeypath" {
     type = string
     default = "~/.ssh/id_rsa.pub"
 }
+
+variable "network_cidr" {
+    type = string
+    default = "10.127.0.0/24"
+}
+
+variable "haproxy_ip" {
+    type = string
+    default = "10.127.0.100"
+}
+
+variable "redmine0_ip" {
+    type = string
+    default = "10.127.0.110"
+}
+
+variable "redmine1_ip" {
+    type = string
+    default = "10.127.0.120"
+}
+
+variable "postgres_ip" {
+    type = string
+    default = "10.127.0.130"
+}
