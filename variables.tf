@@ -13,6 +13,26 @@ variable "instance" {
     default = "e2-small"
 }
 
+variable "db_tier" {
+    type = string
+    default = "db-f1-micro"
+}
+
+variable "db_name" {
+    type = string
+    default = "redmine"
+}
+
+variable "db_user" {
+    type = string
+    default = "redmine_user"
+}
+
+variable "db_password" {
+    type = string
+    default = "redmine_password"
+}
+
 variable "user" {
     type = string
     default = "taras"

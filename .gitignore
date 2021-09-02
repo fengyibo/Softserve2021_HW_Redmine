@@ -3,8 +3,14 @@
 !first_run_redmine0.sh
 !first_run_redmine1.sh
 !first_run_postgres.sh
+!first_run_haproxy.sh.tpl
+!first_run_redmine0.sh.tpl
+!first_run_redmine1.sh.tpl
+!first_run_postgres.sh.tpl
 !main.tf
 !README.md
 !variables.tf
 !outputs.tf
 !.gitignore
+!haproxy.cfg.tmpl
+
