@@ -1,16 +1,16 @@
 variable "region" {
     type = string
-    default = "europe-north1"
+    default = "europe-west3"
 }
 
 variable "project" {
     type = string
-    default = "phonic-server-312214"
+    default = "redmine-324809"
 }
 
 variable "instance" {
     type = string
-    default = "e2-highcpu-4"
+    default = "e2-small"
 }
 
 variable "user" {
