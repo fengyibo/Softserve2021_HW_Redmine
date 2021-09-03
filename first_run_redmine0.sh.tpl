@@ -4,7 +4,7 @@
 sudo apt update && sudo apt upgrade -y
 
 #Installing Docker engine
-sudo apt install docker.io
+sudo apt install docker.io -y
 
 #Running redmine instance with predefined environment
 docker run -d --name redmine -p 3000:3000 \

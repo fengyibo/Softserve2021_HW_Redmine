@@ -34,64 +34,57 @@ resource "google_compute_subnetwork" "redmine_subnetwork" {
 resource "google_compute_firewall" "vpc_icmp" {
   name    = "icmp-allow"
   network = google_compute_network.redmine_network.name
-
   allow {
     protocol = "icmp"
   }
-
   target_tags = ["icmp-allow"]
-
 }
-
 
 resource "google_compute_firewall" "vpc_http" {
   name    = "http-allow"
   network = google_compute_network.redmine_network.name
-
   allow {
     protocol = "tcp"
     ports    = ["80"]
   }
-
   target_tags = ["http-allow"]
-
 }
-
-
 
 resource "google_compute_firewall" "vpc_ssh" {
   name    = "ssh-allow"
   network = google_compute_network.redmine_network.name
-
-
   allow {
     protocol = "tcp"
     ports    = ["22"]
   }
-
   target_tags = ["ssh-allow"]
-
 }
 
 resource "google_compute_firewall" "vpc_hastat" {
   name    = "hastat-allow"
   network = google_compute_network.redmine_network.name
-
-
   allow {
     protocol = "tcp"
     ports    = ["8888"]
   }
-
   target_tags = ["hastat-allow"]
+}
 
+resource "google_compute_firewall" "vpc_internal" {
+  name    = "internal-allow"
+  network = google_compute_network.redmine_network.name
+  source_ranges = [google_compute_subnetwork.redmine_subnetwork.ip_cidr_range]
+  allow {
+    protocol = "tcp"
+  }
+  target_tags = ["internal-allow"]
 }
 
 
 resource "google_compute_instance" "haproxy" {
   name         = "haproxy"
   machine_type = var.instance
-  #  depends_on   = [google_compute_instance.redmine0, google_compute_instance.redmine1]
+  depends_on   = [google_compute_instance.redmine0, google_compute_instance.redmine1]
   tags = ["ssh-allow", "http-allow", "icmp-allow", "hastat-allow"]
 
   boot_disk {
@@ -108,7 +101,11 @@ resource "google_compute_instance" "haproxy" {
     }
   }
 
-  metadata_startup_script = templatefile("first_run_haproxy.sh.tpl", { REDMINE0_IP = var.redmine0_ip, REDMINE1_IP = var.redmine1_ip })
+  metadata_startup_script = templatefile("first_run_haproxy.sh.tpl", {
+    REDMINE0_IP = var.redmine0_ip,
+    REDMINE1_IP = var.redmine1_ip,
+    CFG_FILE = var.haproxy_cfg
+  })
 
   metadata = {
     ssh-keys = "${var.user}:${file(var.publickeypath)}"
@@ -123,7 +120,7 @@ resource "google_compute_instance" "redmine0" {
   name         = "redmine0"
   machine_type = var.instance
   depends_on   = [google_compute_instance.postgres]
-  tags         = ["ssh-allow", "icmp-allow"]
+  tags         = ["ssh-allow", "icmp-allow", "internal-allow"]
 
   boot_disk {
     initialize_params {
@@ -139,7 +136,12 @@ resource "google_compute_instance" "redmine0" {
     }
   }
 
-  metadata_startup_script = templatefile("first_run_redmine0.sh.tpl", { DB_NAME = var.db_name, DB_USER = var.db_user, DB_PASSWORD = var.db_password, POSTGRES_IP = var.postgres_ip })
+  metadata_startup_script = templatefile("first_run_redmine0.sh.tpl", {
+    DB_NAME = var.db_name,
+    DB_USER = var.db_user,
+    DB_PASSWORD = var.db_password,
+    POSTGRES_IP = var.postgres_ip
+  })
 
   metadata = {
     ssh-keys = "${var.user}:${file(var.publickeypath)}"
@@ -152,7 +154,7 @@ resource "google_compute_instance" "redmine1" {
   name         = "redmine1"
   machine_type = var.instance
   depends_on   = [google_compute_instance.redmine0]
-  tags         = ["ssh-allow", "icmp-allow"]
+  tags         = ["ssh-allow", "icmp-allow", "internal-allow"]
 
   boot_disk {
     initialize_params {
@@ -168,7 +170,12 @@ resource "google_compute_instance" "redmine1" {
     }
   }
 
-  metadata_startup_script = templatefile("first_run_redmine1.sh.tpl", { DB_NAME = var.db_name, DB_USER = var.db_user, DB_PASSWORD = var.db_password, POSTGRES_IP = var.postgres_ip })
+  metadata_startup_script = templatefile("first_run_redmine1.sh.tpl", {
+    DB_NAME = var.db_name,
+    DB_USER = var.db_user,
+    DB_PASSWORD = var.db_password,
+    POSTGRES_IP = var.postgres_ip
+  })
 
   metadata = {
     ssh-keys = "${var.user}:${file(var.publickeypath)}"
@@ -182,7 +189,7 @@ resource "google_compute_instance" "postgres" {
   name         = "postgres"
   machine_type = var.instance
   depends_on   = [google_compute_subnetwork.redmine_subnetwork]
-  tags         = ["ssh-allow", "icmp-allow"]
+  tags         = ["ssh-allow", "icmp-allow", "internal-allow"]
 
   boot_disk {
     initialize_params {
@@ -198,11 +205,14 @@ resource "google_compute_instance" "postgres" {
     }
   }
 
-  metadata_startup_script = templatefile("first_run_postgres.sh.tpl", { DB_NAME = var.db_name, DB_USER = var.db_user, DB_PASSWORD = var.db_password })
+  metadata_startup_script = templatefile("first_run_postgres.sh.tpl", {
+    DB_NAME = var.db_name,
+    DB_USER = var.db_user,
+    DB_PASSWORD = var.db_password
+  })
 
   metadata = {
     ssh-keys = "${var.user}:${file(var.publickeypath)}"
 
   }
-
 }

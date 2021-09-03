@@ -3,11 +3,6 @@
 # This script installs 'haproxy' package
 # and sets it to run at boot
 
-# Config file location
-CFG_FILE="/etc/haproxy/haproxy.cfg"
-# Config file desired permissions
-CFG_PERMS=400
-
 echo -e "\nInstalling HAProxy"
 
 if ! [ -x /usr/bin/sudo ]; then
@@ -34,12 +29,23 @@ echo -e "\nEnabling service at startup"
 
 /usr/bin/sudo /usr/bin/systemctl enable haproxy
 
-echo "Fixing config file permissions (${CFG_PERMS})"
-/usr/bin/sudo /usr/bin/chmod ${CFG_PERMS} ${CFG_FILE}
+echo -e "\nClonning repository with haproxy config template."
+git clone https://github.com/rudenkotaras/Softserve2021_HW_Redmine.git /home/ubuntu/tmp
 
-if [ $? -ne 0 ]; then
-    echo -e "WARNING: Error while fixing permissions. Please fix them manually to ${CFG_PERMS}"
-fi
+echo -e "\nReplacing haproxy config."
+cp /home/ubuntu/tmp/haproxy.cfg.tmpl ${CFG_FILE}
+
+echo -e "\nAdding redmine backend addresses to hosts file."
+/usr/bin/sudo bash -c "echo ${REDMINE0_IP} redmine0 >> /etc/hosts"
+/usr/bin/sudo bash -c "echo ${REDMINE1_IP} redmine1 >> /etc/hosts"
+
+
+echo "Fixing config file permissions."
+/usr/bin/sudo /usr/bin/chmod 400 ${CFG_FILE}
+
+echo "Restarting haproxy."
+/usr/bin/sudo /usr/bin/systemctl restart haproxy
+
 
 echo -e "\nDONE."
 

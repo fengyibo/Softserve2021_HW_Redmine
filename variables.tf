@@ -10,12 +10,17 @@ variable "project" {
 
 variable "instance" {
     type = string
-    default = "e2-small"
+    default = "e2-highcpu-4"
 }
 
-variable "db_tier" {
+variable "user" {
     type = string
-    default = "db-f1-micro"
+    default = "taras"
+}
+
+variable "publickeypath" {
+    type = string
+    default = "~/.ssh/id_rsa.pub"
 }
 
 variable "db_name" {
@@ -31,17 +36,6 @@ variable "db_user" {
 variable "db_password" {
     type = string
     default = "redmine_password"
-}
-
-variable "user" {
-    type = string
-    default = "taras"
-}
-
-
-variable "publickeypath" {
-    type = string
-    default = "~/.ssh/id_rsa.pub"
 }
 
 variable "network_cidr" {
@@ -67,4 +61,9 @@ variable "redmine1_ip" {
 variable "postgres_ip" {
     type = string
     default = "10.127.0.130"
+}
+
+variable "haproxy_cfg" {
+    type = string
+    default = "/etc/haproxy/haproxy.cfg"
 }

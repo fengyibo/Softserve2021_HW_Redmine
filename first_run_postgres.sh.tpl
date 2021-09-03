@@ -4,7 +4,7 @@
 sudo apt update && sudo apt upgrade -y
 
 #Installing Docker engine
-sudo apt install docker.io
+sudo apt install docker.io -y
 
 #Running postresql instance with predefined environment
 docker run -d --name postgres -p 5432:5432 \
