@@ -10,7 +10,7 @@ variable "project" {
 
 variable "instance" {
     type = string
-    default = "e2-highcpu-4"
+    default = "e2-small"
 }
 
 variable "user" {
@@ -36,6 +36,11 @@ variable "db_user" {
 variable "db_password" {
     type = string
     default = "redmine_password"
+}
+
+variable "redmine_secret_key" {
+    type = string
+    default = "redmine_key"
 }
 
 variable "network_cidr" {

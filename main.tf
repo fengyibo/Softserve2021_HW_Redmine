@@ -140,6 +140,7 @@ resource "google_compute_instance" "redmine0" {
     DB_NAME = var.db_name,
     DB_USER = var.db_user,
     DB_PASSWORD = var.db_password,
+    REDMINE_KEY = var.redmine_secret_key,
     POSTGRES_IP = var.postgres_ip
   })
 
@@ -174,6 +175,7 @@ resource "google_compute_instance" "redmine1" {
     DB_NAME = var.db_name,
     DB_USER = var.db_user,
     DB_PASSWORD = var.db_password,
+    REDMINE_KEY = var.redmine_secret_key,
     POSTGRES_IP = var.postgres_ip
   })
 
