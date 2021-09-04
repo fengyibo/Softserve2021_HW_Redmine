@@ -1,0 +1,23 @@
+Note on haproxy and cookies.
+----------------------------
+
+Despite the main fix with encryption key inside 'redmine' application, provided
+by @rudenkotaras, there is another additional and/or complementary option
+to allow it to function under 'haproxy' balancing daemon.
+
+The application itself uses cookie named 'Redmine' to track sessions, and 
+when processed by 'haproxy' in round-robin fashion, it starts to break things
+because of different cookie values from different servers.
+
+The next line, added in 'redmine-backend' section in haproxy.cfg file 
+will fix that. It can be used either in conjunctuion of the main solution 
+or as a standalone one.
+
+======
+
+backend redmine_backend
+...
+cookie Redmine prefix nocache
+...
+
+=====
