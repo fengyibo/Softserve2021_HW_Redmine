@@ -13,4 +13,5 @@
 !outputs.tf
 !.gitignore
 !haproxy.cfg.tmpl
+!README.haproxy.cookies
 

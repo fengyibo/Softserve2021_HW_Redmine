@@ -16,6 +16,7 @@ provider "google" {
 }
 
 
+
 resource "google_compute_network" "redmine_network" {
   name                    = "redmine-network"
   auto_create_subnetworks = false
